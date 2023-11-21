@@ -1,47 +1,47 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import axios from 'axios';
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import axios from "axios";
 
-const apiUrl = 'https://654ad12a5b38a59f28ee40a4.mockapi.io/user/';
+const apiUrl = "https://655cd39325b76d9884fe03c3.mockapi.io/todos/";
 
-export const fetchJobs = createAsyncThunk('jobs/fetchJobs', async () => {
+export const fetchJobs = createAsyncThunk("jobs/fetchJobs", async () => {
   const response = await axios.get(apiUrl);
   return response.data;
 });
 
-export const addJob = createAsyncThunk('jobs/addJob', async (newJob) => {
+export const addJob = createAsyncThunk("jobs/addJob", async (newJob) => {
   const response = await axios.post(apiUrl, newJob);
   return response.data;
 });
 
-export const removeJob = createAsyncThunk('jobs/removeJob', async (id) => {
+export const removeJob = createAsyncThunk("jobs/removeJob", async (id) => {
   await axios.delete(`${apiUrl}/${id}`);
   return id;
 });
 
-export const editJob = createAsyncThunk('jobs/editJob', async ({ id, updatedJob }) => {
+export const editJob = createAsyncThunk("jobs/editJob", async ({ id, updatedJob }) => {
   const response = await axios.put(`${apiUrl}/${id}`, updatedJob);
   return response.data;
 });
 
 const jobSlice = createSlice({
-  name: 'jobs',
+  name: "jobs",
   initialState: {
     jobs: [],
-    status: 'idle',
+    status: "idle",
     error: null,
   },
   reducers: {},
   extraReducers: (builder) => {
     builder
       .addCase(fetchJobs.pending, (state) => {
-        state.status = 'loading';
+        state.status = "loading";
       })
       .addCase(fetchJobs.fulfilled, (state, action) => {
-        state.status = 'succeeded';
+        state.status = "succeeded";
         state.jobs = action.payload;
       })
       .addCase(fetchJobs.rejected, (state, action) => {
-        state.status = 'failed';
+        state.status = "failed";
         state.error = action.error.message;
       })
       .addCase(addJob.fulfilled, (state, action) => {
