@@ -1,21 +1,14 @@
-import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { fetchJobs, addJob, removeJob, editJob } from '../features/jobSlice';
-import { View, Text, Button, FlatList, SafeAreaView, TextInput } from 'react-native';
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchJobs, addJob, removeJob, editJob } from "../features/jobSlice";
+import { View, Text, Button, FlatList, SafeAreaView, TextInput } from "react-native";
 
 const JobList = () => {
   const dispatch = useDispatch();
   const jobs = useSelector((state) => state.jobs.jobs);
-  const status = useSelector((state) => state.jobs.status);
 
-  useEffect(() => {
-    if (status === 'idle') {
-      dispatch(fetchJobs());
-    }
-  }, [status, dispatch]);
-
-  const [newJobText, setNewJobText] = useState('');
-  const [editJobText, setEditJobText] = useState('');
+  const [newJobText, setNewJobText] = useState("");
+  const [editJobText, setEditJobText] = useState("");
   const [editJobId, setEditJobId] = useState(null);
 
   const handleAddJob = () => {
@@ -23,7 +16,7 @@ const JobList = () => {
       todojob: newJobText,
     };
     dispatch(addJob(newJob));
-    setNewJobText('');
+    setNewJobText("");
   };
 
   const handleRemoveJob = (id) => {
@@ -37,26 +30,30 @@ const JobList = () => {
 
   const handleCancelEditJob = () => {
     setEditJobId(null);
-    setEditJobText('');
+    setEditJobText("");
   };
 
   const handleSaveEditJob = (id) => {
     dispatch(editJob({ id, updatedJob: { todojob: editJobText } }));
     setEditJobId(null);
-    setEditJobText('');
+    setEditJobText("");
     dispatch(fetchJobs());
   };
 
+  useEffect(() => {
+    dispatch(fetchJobs());
+  }, []);
+
   const renderItem = ({ item }) => (
-    <View style={{ flex: 1, alignItems: 'center' }}>
+    <View style={{ flex: 1, alignItems: "center" }}>
       <View
         style={{
-          width: '90%',
+          width: "90%",
           height: 80,
-          backgroundColor: '#bdd',
-          flexDirection: 'row',
-          justifyContent: 'space-between',
-          alignItems: 'center',
+          backgroundColor: "#bdd",
+          flexDirection: "row",
+          justifyContent: "space-between",
+          alignItems: "center",
           marginBottom: 1,
           borderRadius: 10,
         }}
@@ -66,19 +63,19 @@ const JobList = () => {
             style={{
               flex: 1,
               fontSize: 20,
-              fontWeight: '700',
+              fontWeight: "700",
               marginLeft: 20,
               borderBottomWidth: 1,
-              borderColor: 'gray',
+              borderColor: "gray",
             }}
             value={editJobText}
             onChangeText={(text) => setEditJobText(text)}
           />
         ) : (
-          <Text style={{ fontSize: 20, fontWeight: '700', marginLeft: 20 }}>{item.todojob}</Text>
+          <Text style={{ fontSize: 20, fontWeight: "700", marginLeft: 20 }}>{item.todojob}</Text>
         )}
 
-        <View style={{ flexDirection: 'row' }}>
+        <View style={{ flexDirection: "row" }}>
           {editJobId === item.id ? (
             <>
               <Button title="Save" onPress={() => handleSaveEditJob(item.id)} />
@@ -94,21 +91,27 @@ const JobList = () => {
   );
 
   return (
-    <SafeAreaView>
-      <View style={{alignItems:'center',marginTop:20}}>
+    <SafeAreaView style={{ gap: 10 }}>
+      <View style={{ flex: 1, alignItems: "center", marginTop: 20, justifyContent: "center" }}>
         <TextInput
-          style={{width:'80%', height: 40, borderColor: 'gray', borderWidth: 1, margin: 10, paddingLeft: 10 ,borderRadius:10,fontSize:20,fontWeight:700}}
+          style={{
+            width: "80%",
+            height: 40,
+            borderColor: "gray",
+            borderWidth: 1,
+            margin: 10,
+            paddingLeft: 10,
+            borderRadius: 10,
+            fontSize: 20,
+            fontWeight: 700,
+          }}
           placeholder="Enter new job"
           value={newJobText}
           onChangeText={(text) => setNewJobText(text)}
         />
       </View>
       <Button title="Add Job" onPress={handleAddJob} />
-      <FlatList
-        data={jobs}
-        keyExtractor={(item) => item.id.toString()}
-        renderItem={renderItem}
-      />
+      <FlatList data={jobs} keyExtractor={(item) => item.id.toString()} renderItem={renderItem} />
     </SafeAreaView>
   );
 };
